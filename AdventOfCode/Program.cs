@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 
+
+/////////////////////////////////////////////////  DAY 2  ///////////////////////////////////////
 var fileLines = System.IO.File.ReadAllLines("input-2.txt");
 
 Regex rxNonDigits = new Regex(@"[^\d]+");
@@ -74,6 +76,14 @@ foreach (string singleLine in fileLines)
 
 Console.WriteLine("Day 2 part 1: " + possibleGames.Sum(gameId => gameId) + " games are possible");
 Console.WriteLine("Day 2 part 2: " + powerSums.Sum(x => x) + " sum of the powers");
+
+
+
+
+
+
+
+
 
 
 /////////////////////////////////////////////////  DAY 1  ///////////////////////////////////////
