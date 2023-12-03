@@ -72,7 +72,7 @@ foreach (Space space in listOfSpaces)
     }
 }
 
-List<Space> neighboursAlreadyDone = new List<Space>();
+
 foreach (Part part in listOfParts)
 {
     int num = 1;
@@ -88,6 +88,14 @@ foreach (Part part in listOfParts)
 
 Console.WriteLine("Day 3 part 1: Sum of part numbers is " + sum);
 Console.WriteLine("Day 3 part 2: Sum of gear ratios is " + gearRatioSum);
+
+
+
+
+
+
+
+
 
 
 
