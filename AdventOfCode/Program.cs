@@ -9,8 +9,7 @@ using AdventOfCode;
 
 
 
-////////////////////////////////////////////////// DAY 3 /////////////////////////////////////////
-///
+////////////////////////////////////////////////// DAY 3 ////////////////////////////////////////////
 var fileLines = System.IO.File.ReadAllLines("input-3.txt");
 
 List<Space> listOfSpaces = new List<Space>();
@@ -57,19 +56,40 @@ foreach (string singleLine in fileLines)
 }
 
 int sum = 0;
+int gearRatioSum = 0;
 foreach (Space space in listOfSpaces)
 {
     foreach (Part part in listOfParts.Where(k=>k.Y == space.Y || k.Y == space.Y - 1 || k.Y == space.Y + 1))
     {
-
                 if (part.X == space.X.First() - 1 || part.X == space.X.Last() + 1 || space.X.Contains(part.X))
                 {
+
+                 if (!part.Neighbours.Contains(space)) {
+                     part.Neighbours.Add(space);
+                }
                     sum += space.Number;
                 }
     }
 }
 
-Console.WriteLine("Day 1 part 1: Sum of part numbers is " + sum);
+List<Space> neighboursAlreadyDone = new List<Space>();
+foreach (Part part in listOfParts)
+{
+    int num = 1;
+    if (part.Neighbours.Count > 1)
+    {
+        foreach (Space space in part.Neighbours)
+        {
+            num = num * space.Number;
+        }
+        gearRatioSum += num;
+    }
+}
+
+Console.WriteLine("Day 3 part 1: Sum of part numbers is " + sum);
+Console.WriteLine("Day 3 part 2: Sum of gear ratios is " + gearRatioSum);
+
+
 
 /////////////////////////////////////////////////  DAY 2  ///////////////////////////////////////
 fileLines = System.IO.File.ReadAllLines("input-2.txt");
