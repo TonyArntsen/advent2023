@@ -4,11 +4,75 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AdventOfCode;
 
 
+
+
+////////////////////////////////////////////////// DAY 3 /////////////////////////////////////////
+///
+var fileLines = System.IO.File.ReadAllLines("input-3.txt");
+
+List<Space> listOfSpaces = new List<Space>();
+List<Part> listOfParts = new List<Part>();
+int y = 0;
+
+
+
+foreach (string singleLine in fileLines)
+{
+    string number = "";
+    List<Space> spaceTemp = new List<Space>();
+    List<int> xSpaces = new List<int>();
+    for (int x = 0; x < singleLine.Length; x++)
+    {
+        if (char.IsNumber(singleLine[x]))
+        {
+            number += singleLine[x];
+            xSpaces.Add(x);
+        }
+
+
+        if (!char.IsNumber(singleLine[x]) && singleLine[x] != '.')
+        {
+            listOfParts.Add(new Part() { Symbol = singleLine[x], X = x, Y = y });
+        }
+
+        if (!char.IsNumber(singleLine[x]) || x == singleLine.Length - 1)
+        {
+            if (number.Length > 0)
+            {
+                List<int> xcords = new List<int>();
+                xcords = xcords.Concat(xSpaces).ToList();
+                spaceTemp.Add(new Space() { X = xcords, Y = y, Number = int.Parse(number) });
+                listOfSpaces = listOfSpaces.Concat(spaceTemp).ToList();
+                spaceTemp.Clear();
+                xSpaces.Clear();
+            }
+            number = "";
+            continue;
+        }
+    }
+    y++;
+}
+
+int sum = 0;
+foreach (Space space in listOfSpaces)
+{
+    foreach (Part part in listOfParts.Where(k=>k.Y == space.Y || k.Y == space.Y - 1 || k.Y == space.Y + 1))
+    {
+
+                if (part.X == space.X.First() - 1 || part.X == space.X.Last() + 1 || space.X.Contains(part.X))
+                {
+                    sum += space.Number;
+                }
+    }
+}
+
+Console.WriteLine("Day 1 part 1: Sum of part numbers is " + sum);
 
 /////////////////////////////////////////////////  DAY 2  ///////////////////////////////////////
-var fileLines = System.IO.File.ReadAllLines("input-2.txt");
+fileLines = System.IO.File.ReadAllLines("input-2.txt");
 
 Regex rxNonDigits = new Regex(@"[^\d]+");
 int gameId = 1;
