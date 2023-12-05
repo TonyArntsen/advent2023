@@ -25,4 +25,10 @@ namespace AdventOfCode
 
         public List<Space> Neighbours { get; set; } = new List<Space>();
     }
+
+    public class Row
+    {
+        public List<string> Left { get; set; } = new List<string>();
+        public List<string> Right { get; set; } = new List<string>();
+    }
 }

@@ -1,22 +1,84 @@
 ﻿using System.Text.RegularExpressions;
-
-using System;
-using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using AdventOfCode;
+using System.Collections.Generic;
+
+
+////////////////////////////////////////////////// DAY 4 ////////////////////////////////////////////
+
+int line = 1;
+int totalSumOfCards = 0;
+var fileLines = System.IO.File.ReadAllLines("input-4.txt");
+int fish = 0;
+int iterator = 0;
+int wonCards = 0;
+List<Row> rows = new List<Row>();
+List<Row> newRows = new List<Row>();
+
+
+foreach (string singleLine in fileLines)
+{
+    int cardWorth = 0;
+    string washedString = singleLine.Replace("  ", " ");
+
+    string removedPrefix = washedString.Split(':')[1];
+
+    string dealerCardsString = removedPrefix.Split('|').First().TrimStart().TrimEnd();
+    string yourCardsString = removedPrefix.Split('|').Last().TrimStart().TrimEnd();
+
+    List<string> dealerCards = dealerCardsString.Split(' ').ToList();
+    List<string> yourCards = yourCardsString.Split(' ').ToList();
+
+    Row row = new Row();
+    row.Left = dealerCards;
+    row.Right = yourCards;
+    rows.Add(row);
+
+    foreach (string card in dealerCards)
+    {
+
+        if (yourCards.Contains(card))
+        {
+            if (cardWorth == 0)
+            {
+                cardWorth = 1;
+                continue;
+            }
+            cardWorth *= 2;
+        }
+    }
+    totalSumOfCards += cardWorth;
+    line ++;
+}
+
+int k = 0;
+while (k < rows.Count())
+{
+    var hashSet = new HashSet<string>(rows[k].Left);
+    int count = rows[k].Right.Count(x => hashSet.Contains(x));
+    int index = rows.FindIndex(x => x.Equals(rows[k]));
+    for (int j = index + 1; j < count + index + 1; j++)
+    {
+        if (count + index < rows.Count())
+        {
+            rows.Add(rows[j]);
+        }
+    }
+    k++;
+}
+
+Console.WriteLine("Day 4 part 1: " + totalSumOfCards);
+Console.WriteLine("Day 4 part 2: " + rows.Count());
 
 
 
 
 ////////////////////////////////////////////////// DAY 3 ////////////////////////////////////////////
-var fileLines = System.IO.File.ReadAllLines("input-3.txt");
+fileLines = System.IO.File.ReadAllLines("input-3.txt");
 
 List<Space> listOfSpaces = new List<Space>();
 List<Part> listOfParts = new List<Part>();
 int y = 0;
-
-
 
 foreach (string singleLine in fileLines)
 {
@@ -59,16 +121,17 @@ int sum = 0;
 int gearRatioSum = 0;
 foreach (Space space in listOfSpaces)
 {
-    foreach (Part part in listOfParts.Where(k=>k.Y == space.Y || k.Y == space.Y - 1 || k.Y == space.Y + 1))
+    foreach (Part part in listOfParts.Where(k => k.Y == space.Y || k.Y == space.Y - 1 || k.Y == space.Y + 1))
     {
-                if (part.X == space.X.First() - 1 || part.X == space.X.Last() + 1 || space.X.Contains(part.X))
-                {
+        if (part.X == space.X.First() - 1 || part.X == space.X.Last() + 1 || space.X.Contains(part.X))
+        {
 
-                 if (!part.Neighbours.Contains(space)) {
-                     part.Neighbours.Add(space);
-                }
-                    sum += space.Number;
-                }
+            if (!part.Neighbours.Contains(space))
+            {
+                part.Neighbours.Add(space);
+            }
+            sum += space.Number;
+        }
     }
 }
 
@@ -109,7 +172,7 @@ int green = 13;
 int blue = 14;
 
 List<int> possibleGames = new List<int>();
-List<int> powerSums     = new List<int>();
+List<int> powerSums = new List<int>();
 
 foreach (string singleLine in fileLines)
 {
@@ -224,7 +287,7 @@ public static class ScanForNumbers
                 {
                     listOfNumbers.Add((int)char.GetNumericValue(rightMost));
                     head = position;
-  
+
                 }
             }
 
@@ -232,7 +295,7 @@ public static class ScanForNumbers
             {
                 int result = numbers.Where(x => partOfstring.Contains(x.Key)).First().Value;
                 listOfNumbers.Add(result);
-                head = position-1;
+                head = position - 1;
             }
         }
         return listOfNumbers;
