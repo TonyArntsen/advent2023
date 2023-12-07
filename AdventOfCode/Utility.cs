@@ -31,4 +31,20 @@ namespace AdventOfCode
         public List<string> Left { get; set; } = new List<string>();
         public List<string> Right { get; set; } = new List<string>();
     }
+
+    public class Map
+    {
+        public long mapId { get; set; } = 0;
+        public long DestinationRangeStart { get; set; }
+
+        public long SourceRangeStart { get; set; }
+
+        public long RangeLength { get; set; }
+    }
+
+    public class AlmanacConvert
+    {
+        public long source { get; set; }
+        public long dest { get; set; }
+    }
 }

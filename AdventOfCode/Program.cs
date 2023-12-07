@@ -2,6 +2,99 @@
 using System.Linq;
 using AdventOfCode;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
+using System.Diagnostics;
+
+
+
+/////////////////////////////////////////////////// DAY 5 ///////////////////////////////////////////
+
+
+
+day5();
+static void day5()
+{
+    Stopwatch stopwatch = new Stopwatch();
+
+    stopwatch.Start();
+    var fileLines = System.IO.File.ReadAllLines("input-5.txt");
+
+List<string> seeds = fileLines.First().Split(':').Last().TrimStart().Split(' ').ToList();
+List<string> seedPairs = new List<string>();
+    object lockObj = new object();
+
+for (int i = 0; i < seeds.Count; i += 2)
+{
+    seedPairs.Add(seeds[i] + " " + seeds[i+1]);
+}
+
+HashSet<Map> maps = new HashSet<Map>();
+bool startAdding = false;
+int mapId = -1;
+foreach (string l in fileLines)
+{
+    if (string.IsNullOrEmpty(l))
+    {
+        startAdding = false;
+    }
+
+    if (startAdding)
+    {
+        string[] brokenString = l.Split(' ');
+        Map map = new Map() { DestinationRangeStart = Int64.Parse(brokenString[0]),
+         SourceRangeStart = Int64.Parse(brokenString[1]),
+         RangeLength = Int64.Parse(brokenString[2]),
+         mapId = mapId};
+
+        maps.Add(map);
+    }
+
+    if (l.Contains("map:"))
+    {
+        startAdding = true;
+        mapId++;
+    }
+}
+
+List<long> seedLocations = new List<long>();
+
+    Parallel.ForEach(seedPairs, (seed) =>
+    {
+        long rangeFrom = Int64.Parse(seed.Split(' ').First());
+        long rangeTo = Int64.Parse(seed.Split(' ').Last());
+        long seedId = 0;
+        IEnumerable<Map> tempMap;
+
+        for (long r = rangeFrom; r < rangeFrom + rangeTo; r++)
+        {
+            seedId = r;
+
+            for (int mapNumber = 0; mapNumber <= 6; mapNumber++)
+            {
+                tempMap = maps.Where(x => x.mapId == mapNumber && seedId >= x.SourceRangeStart && seedId < x.SourceRangeStart + x.RangeLength);
+                if (!tempMap.Any())
+                {
+                    continue;
+                }
+
+                else
+                {
+                    seedId = tempMap.First().DestinationRangeStart + (seedId - tempMap.First().SourceRangeStart);
+                }
+
+            }
+            lock (lockObj)
+            {
+                seedLocations.Add(seedId);
+            }
+        }
+    });
+
+Console.WriteLine("Day 5: Nearest location is " + seedLocations.Min());
+    stopwatch.Stop();
+
+}
+
 
 
 ////////////////////////////////////////////////// DAY 4 ////////////////////////////////////////////
@@ -69,6 +162,8 @@ while (k < rows.Count())
 
 Console.WriteLine("Day 4 part 1: " + totalSumOfCards);
 Console.WriteLine("Day 4 part 2: " + rows.Count());
+
+
 
 
 
