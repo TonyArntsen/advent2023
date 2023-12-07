@@ -47,4 +47,11 @@ namespace AdventOfCode
         public long source { get; set; }
         public long dest { get; set; }
     }
+
+    public class Race
+    {
+        public int duration { get; set; }
+
+        public int record { get; set; }
+    }
 }

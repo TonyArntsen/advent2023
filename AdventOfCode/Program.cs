@@ -7,9 +7,37 @@ using System.Diagnostics;
 
 
 
+//////////////////////////////////////////////// DAY 6 ///////////////////////////////////////////////
+
+
+List<long> races = new List<long>();
+List<long> destinations = new List<long>();
+var fileLines = System.IO.File.ReadAllLines("input-6.txt");
+
+    List<string> raceDuration = fileLines[0].Split(':').Last().Split(' ').Where(x=>x!=string.Empty).ToList();
+    List<string> raceRecord = fileLines[1].Split(':').Last().Split(' ').Where(x => x != string.Empty).ToList();
+
+raceDuration.ForEach(x => races.Add(int.Parse(x.Replace(" ", string.Empty))));
+raceRecord.ForEach(x => destinations.Add(long.Parse(x.Replace(" ", string.Empty))));
+
+
+List<int> results = new List<int>();
+long numberOfWays = 0;
+
+    for (int j = 0; j < races[0]; j++)
+    {
+        long result = j * (races[0] - j);
+
+        if (result > destinations[0])
+        {
+            numberOfWays++;
+        }
+    }
+
+
+Console.WriteLine("Day 6 part 2: Number of ways to win: " + numberOfWays);
+
 /////////////////////////////////////////////////// DAY 5 ///////////////////////////////////////////
-
-
 
 day5();
 static void day5()
@@ -19,44 +47,47 @@ static void day5()
     stopwatch.Start();
     var fileLines = System.IO.File.ReadAllLines("input-5.txt");
 
-List<string> seeds = fileLines.First().Split(':').Last().TrimStart().Split(' ').ToList();
-List<string> seedPairs = new List<string>();
+    List<string> seeds = fileLines.First().Split(':').Last().TrimStart().Split(' ').ToList();
+    List<string> seedPairs = new List<string>();
     object lockObj = new object();
 
-for (int i = 0; i < seeds.Count; i += 2)
-{
-    seedPairs.Add(seeds[i] + " " + seeds[i+1]);
-}
-
-HashSet<Map> maps = new HashSet<Map>();
-bool startAdding = false;
-int mapId = -1;
-foreach (string l in fileLines)
-{
-    if (string.IsNullOrEmpty(l))
+    for (int i = 0; i < seeds.Count; i += 2)
     {
-        startAdding = false;
+        seedPairs.Add(seeds[i] + " " + seeds[i + 1]);
     }
 
-    if (startAdding)
+    HashSet<Map> maps = new HashSet<Map>();
+    bool startAdding = false;
+    int mapId = -1;
+    foreach (string l in fileLines)
     {
-        string[] brokenString = l.Split(' ');
-        Map map = new Map() { DestinationRangeStart = Int64.Parse(brokenString[0]),
-         SourceRangeStart = Int64.Parse(brokenString[1]),
-         RangeLength = Int64.Parse(brokenString[2]),
-         mapId = mapId};
+        if (string.IsNullOrEmpty(l))
+        {
+            startAdding = false;
+        }
 
-        maps.Add(map);
+        if (startAdding)
+        {
+            string[] brokenString = l.Split(' ');
+            Map map = new Map()
+            {
+                DestinationRangeStart = Int64.Parse(brokenString[0]),
+                SourceRangeStart = Int64.Parse(brokenString[1]),
+                RangeLength = Int64.Parse(brokenString[2]),
+                mapId = mapId
+            };
+
+            maps.Add(map);
+        }
+
+        if (l.Contains("map:"))
+        {
+            startAdding = true;
+            mapId++;
+        }
     }
 
-    if (l.Contains("map:"))
-    {
-        startAdding = true;
-        mapId++;
-    }
-}
-
-List<long> seedLocations = new List<long>();
+    List<long> seedLocations = new List<long>();
 
     Parallel.ForEach(seedPairs, (seed) =>
     {
@@ -90,10 +121,14 @@ List<long> seedLocations = new List<long>();
         }
     });
 
-Console.WriteLine("Day 5: Nearest location is " + seedLocations.Min());
+    Console.WriteLine("Day 5: Nearest location is " + seedLocations.Min());
     stopwatch.Stop();
 
 }
+
+
+
+
 
 
 
@@ -101,7 +136,7 @@ Console.WriteLine("Day 5: Nearest location is " + seedLocations.Min());
 
 int line = 1;
 int totalSumOfCards = 0;
-var fileLines = System.IO.File.ReadAllLines("input-4.txt");
+fileLines = System.IO.File.ReadAllLines("input-4.txt");
 int fish = 0;
 int iterator = 0;
 int wonCards = 0;
@@ -141,7 +176,7 @@ foreach (string singleLine in fileLines)
         }
     }
     totalSumOfCards += cardWorth;
-    line ++;
+    line++;
 }
 
 int k = 0;
@@ -162,6 +197,9 @@ while (k < rows.Count())
 
 Console.WriteLine("Day 4 part 1: " + totalSumOfCards);
 Console.WriteLine("Day 4 part 2: " + rows.Count());
+
+
+
 
 
 
