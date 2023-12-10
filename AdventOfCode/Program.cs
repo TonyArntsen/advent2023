@@ -4,8 +4,129 @@ using AdventOfCode;
 using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
 using System.Diagnostics;
+using Microsoft.VisualBasic;
+using System.Collections;
 
 
+
+//////////////////////////////////////////////// DAY 7 ///////////////////////////////////////////////
+
+
+string rank = "J23456789TQKA";
+char[] pattern = new char[] { 'A', 'B', 'C', 'D', 'E' };
+List<Card> deck = new List<Card>();
+
+Dictionary<string, int> cardTypes = new Dictionary<string, int>();
+cardTypes.Add("ABCDE", 100);
+cardTypes.Add("AABCD", 200);
+cardTypes.Add("AABBC", 300);
+cardTypes.Add("AAABC", 400);
+cardTypes.Add("AAABB", 500);
+cardTypes.Add("AAAAB", 600);
+cardTypes.Add("AAAAA", 700);
+
+
+var cardList = System.IO.File.ReadAllLines("input-7.txt");
+
+
+
+foreach (string card in cardList)
+{
+    string cardOnly = card.Split(" ").First();
+    int bid = int.Parse(card.Split(" ").Last());
+    var sorted = cardOnly
+    .OrderBy(x => rank.IndexOf(x))
+    .ToArray()
+    .GroupBy(s => s)
+    .OrderByDescending(g => g.Count()).ToList();
+
+    List<char> lst = new List<char>();
+
+    foreach (var group in sorted)
+    {
+        foreach (char ch in group)
+        {
+            lst.Add(ch);
+        }
+    }
+
+    string resultStr = new string(lst.ToArray());
+    int index = -1;
+    char highestOccurrence = resultStr
+    .Where(x => x != 'J')
+    .GroupBy(x => x)
+    .OrderByDescending(g => g.Count())
+    .Select(g => g.Key)
+    .FirstOrDefault();
+
+    resultStr = resultStr.Replace('J', highestOccurrence);
+
+    List<char> hand = new List<char>();
+    List<char> modelResult = new List<char>();
+
+    foreach (char currentCard in resultStr)
+    {
+        if (!hand.Contains(currentCard))
+        {
+            index++;
+        }
+        hand.Add(currentCard);
+        modelResult.Add(pattern[index]);
+    }
+
+
+
+    Card c = new Card();
+    c.bid = bid;
+    c.face = resultStr;
+    c.originalFace = cardOnly;
+    c.prePattern = new string(modelResult.ToArray());
+    c.pattern = new string(modelResult.ToArray());
+
+    if (c.pattern == "AABBB")
+    {
+        c.pattern = "AAABB";
+    }
+
+    if (c.pattern == "AABCC")
+    {
+        c.pattern = "AABBC";
+    }
+        
+
+    c.cStrength = cStrength(c.originalFace);
+    deck.Add(c);
+}
+
+List<int> cStrength(string face)
+{
+    List<int> result = new List<int>();
+    foreach (char letter in face)
+    {
+        int str = rank.IndexOf(letter) + 1;
+        result.Add(str);
+    }
+
+    return result;
+}
+
+
+deck = deck.OrderBy(x => cardTypes[x.pattern])
+                     .ThenBy(a => a, new RankComparer())
+                     .ToList();
+
+int r = 1;
+int totalsum = 0;
+
+foreach (Card c in deck)
+{
+    totalsum += r * c.bid;
+
+    Console.WriteLine(c.prePattern + " => " + c.pattern + " " + c.originalFace + " - " + r);
+    r++;
+}
+
+Console.WriteLine("Day 7 part 2: Sum of rank bids: " + totalsum);
 
 //////////////////////////////////////////////// DAY 6 ///////////////////////////////////////////////
 
@@ -14,8 +135,8 @@ List<long> races = new List<long>();
 List<long> destinations = new List<long>();
 var fileLines = System.IO.File.ReadAllLines("input-6.txt");
 
-    List<string> raceDuration = fileLines[0].Split(':').Last().Split(' ').Where(x=>x!=string.Empty).ToList();
-    List<string> raceRecord = fileLines[1].Split(':').Last().Split(' ').Where(x => x != string.Empty).ToList();
+List<string> raceDuration = fileLines[0].Split(':').Last().Split(' ').Where(x => x != string.Empty).ToList();
+List<string> raceRecord = fileLines[1].Split(':').Last().Split(' ').Where(x => x != string.Empty).ToList();
 
 raceDuration.ForEach(x => races.Add(int.Parse(x.Replace(" ", string.Empty))));
 raceRecord.ForEach(x => destinations.Add(long.Parse(x.Replace(" ", string.Empty))));
@@ -24,15 +145,15 @@ raceRecord.ForEach(x => destinations.Add(long.Parse(x.Replace(" ", string.Empty)
 List<int> results = new List<int>();
 long numberOfWays = 0;
 
-    for (int j = 0; j < races[0]; j++)
-    {
-        long result = j * (races[0] - j);
+for (int j = 0; j < races[0]; j++)
+{
+    long result = j * (races[0] - j);
 
-        if (result > destinations[0])
-        {
-            numberOfWays++;
-        }
+    if (result > destinations[0])
+    {
+        numberOfWays++;
     }
+}
 
 
 Console.WriteLine("Day 6 part 2: Number of ways to win: " + numberOfWays);

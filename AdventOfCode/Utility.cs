@@ -54,4 +54,43 @@ namespace AdventOfCode
 
         public int record { get; set; }
     }
+
+    public class Card
+    {
+        public int rank { get; set; } = 0;
+
+        public string face { get; set; }
+
+        public string prePattern { get; set; } 
+
+        public string pattern { get; set; }
+        public int bid { get; set; }
+
+        public string originalFace { get; set; }
+
+        public List<int> cStrength { get; set; }
+
+    }
+
+    public class RankComparer : IComparer<Card>
+    {
+        public int Compare(Card x, Card y)
+        {
+            int minLength = Math.Min(x.cStrength.Count, y.cStrength.Count);
+
+            for (int i = 0; i < minLength; i++)
+            {
+                if (x.cStrength[i] > y.cStrength[i])
+                {
+                    return 1;
+                }
+                else if (x.cStrength[i] < y.cStrength[i])
+                {
+                    return -1;
+                }
+            }
+            return x.cStrength.Count.CompareTo(y.cStrength.Count);
+        }
+    }
 }
+
