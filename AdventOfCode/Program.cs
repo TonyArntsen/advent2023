@@ -8,6 +8,53 @@ using Microsoft.VisualBasic;
 using System.Collections;
 
 
+//////////////////////////////////////////////// DAY 8 ///////////////////////////////////////////////
+
+var directions = System.IO.File.ReadAllLines("input-8.txt").First();
+var input = System.IO.File.ReadAllLines("input-8.txt");
+
+List<DesertMap> map = new List<DesertMap>();
+
+foreach (string instruction in input.Where(x=> x != directions && x != string.Empty))
+{
+    DesertMap m = new DesertMap();
+    string[] row = instruction.Split('=');
+
+    m.Destination = row[0].Trim();
+    m.Left = row[1].Split(',').First().Replace("(", "").Trim();
+    m.Right = row[1].Split(',').Last().Replace(")", "").Trim();
+    Console.WriteLine(row.First());
+    map.Add(m);
+}
+
+int ind = 0;
+int totalSteps = 0;
+string location = "AAA";
+while (location != "ZZZ")
+{
+    if (ind >= directions.Length)
+    {
+        ind = 0;
+    }
+    char dir = directions[ind];
+
+    if (dir == 'R')
+    {
+        location = map.Where(x => x.Destination == location).First().Right;
+        totalSteps++;
+    }
+
+    if (dir == 'L')
+    {
+        totalSteps++;
+        location = map.Where(x => x.Destination == location).First().Left;
+    }
+    ind++;
+
+}
+
+Console.WriteLine("Day 8 part 1: It took this many step: " + totalSteps);
+
 
 //////////////////////////////////////////////// DAY 7 ///////////////////////////////////////////////
 

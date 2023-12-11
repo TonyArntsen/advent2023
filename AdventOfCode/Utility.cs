@@ -92,5 +92,15 @@ namespace AdventOfCode
             return x.cStrength.Count.CompareTo(y.cStrength.Count);
         }
     }
+
+    public class DesertMap
+    {
+        public string Destination { get; set; }
+
+        public string Left { get; set; }
+
+        public string Right { get; set; }
+    }
+
 }
 
